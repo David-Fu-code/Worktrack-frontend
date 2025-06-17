@@ -1,75 +1,82 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { api } from "../api";
 
 export default function Dashboard() {
-  const navigate = useNavigate(); // Hook to programmatically redirect users
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [applications, setApplications] = useState([]);
 
-  // Handles user logout
+  useEffect(() => {
+    api.get("/users/me")
+      .then(res => setUser(res.data))
+      .catch(() => navigate("/login"));
+
+    api.get("/applications")
+      .then(res => setApplications(res.data))
+      .catch(err => console.error("Error loading applications", err));
+  }, []);
+
   const handleLogout = () => {
-    // Remove tokens from localStorage
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-
-    // Redirect to login page
     navigate("/login");
   };
 
-  return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>👋 Welcome to your Dashboard</h1>
-        <p style={styles.text}>
-          This page is protected and only visible when logged in.
-        </p>
+  const total = applications.length;
 
-        {/* Sign out button */}
-        <button onClick={handleLogout} style={styles.logoutButton}>
-          🔓 Sign out
+  if (!user) return <p className="text-center mt-20">Loading dashboard...</p>;
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* 🧭 Top Navbar */}
+      <header className="bg-white shadow px-6 py-4 flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-indigo-700">WorkTrack</h1>
+        <button
+          onClick={handleLogout}
+          className="text-sm bg-red-50 text-red-600 px-4 py-2 rounded hover:bg-red-100 transition"
+        >
+          🔓 Logout
         </button>
-        <p className="mt-4">
-          <a href="/profile" className="text-indigo-500 underline hover:text-blue-800">
-            View My Profile →
-          </a>
-        </p>
-      </div>
+      </header>
+
+      {/* 🧠 Main Dashboard */}
+      <main className="max-w-4xl mx-auto px-6 py-12">
+        <h2 className="text-3xl font-bold mb-6">
+          👋 Welcome back, <span className="text-indigo-600">{user.displayName || user.email}</span>
+        </h2>
+
+        {/* 📊 Job Stats Card */}
+        <div className="mb-8 p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+          <p className="text-lg font-medium text-gray-700">
+            📊 You’ve applied to <span className="font-bold text-indigo-600">{total}</span> job{total === 1 ? "" : "s"} this month.
+          </p>
+        </div>
+
+        {/* 💼 Action Buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <button
+            onClick={() => navigate("/applications/new")}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-4 rounded-xl shadow flex items-center justify-center gap-2"
+          >
+            ➕ Add Job Application
+          </button>
+
+          <button
+            onClick={() => navigate("/applications")}
+            className="bg-white border border-gray-300 hover:border-indigo-400 text-gray-800 font-medium px-6 py-4 rounded-xl flex items-center justify-center gap-2"
+          >
+            📄 View All Applications
+          </button>
+
+          <button
+            onClick={() => navigate("/profile")}
+            className="bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-medium px-6 py-4 rounded-xl border border-indigo-200 flex items-center justify-center gap-2 col-span-1 sm:col-span-2"
+          >
+            👤 My Profile
+          </button>
+        </div>
+      </main>
     </div>
   );
 }
-
-// Inline CSS styles for the dashboard layout
-const styles = {
-  container: {
-    minHeight: "100vh",                // Full height
-    backgroundColor: "#f5f7fa",        // Light background
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  card: {
-    backgroundColor: "#fff",           // White card background
-    padding: "2rem 3rem",
-    borderRadius: "12px",              // Rounded corners
-    boxShadow: "0 4px 20px rgba(0,0,0,0.1)", // Soft shadow
-    textAlign: "center",
-  },
-  title: {
-    fontSize: "1.8rem",
-    color: "#333",
-    marginBottom: "0.75rem",
-  },
-  text: {
-    fontSize: "1rem",
-    color: "#666",
-    marginBottom: "2rem",
-  },
-  logoutButton: {
-    padding: "0.75rem 1.5rem",
-    backgroundColor: "#0d6efd",        // Blue color for consistency
-    color: "#fff",
-    fontSize: "1rem",
-    fontWeight: "bold",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    transition: "background 0.2s ease",
-  },
-};

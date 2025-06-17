@@ -8,6 +8,9 @@ import ConfirmEmail from './pages/ConfirmEmail';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
+import Applications from './pages/Applications';
+import NewApplications from './pages/NewApplications';
+import EditApplication from "./pages/EditApplication";
 
 // Auth route protection
 import PrivateRoute from './components/PrivateRoute';
@@ -44,6 +47,14 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/applications" 
+          element={<Applications />} />
+
+          <Route path="/applications/new" 
+          element={<NewApplications />} />
+
+          <Route path="/applications/:id/edit" 
+          element={<EditApplication />} />
         </Routes>
       </div>
     </BrowserRouter>
