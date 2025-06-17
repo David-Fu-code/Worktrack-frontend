@@ -53,8 +53,8 @@ npm install
 ## ScreensShots
 ![Home](https://github.com/user-attachments/assets/2f8b3d9a-96af-4a79-8c84-30bd8b8de9b8)
 ![DashBoard](https://github.com/user-attachments/assets/246c8886-565a-4038-88c1-6e4564962a43)
-![All applications](https://github.com/user-attachments/assets/4793b01f-1cdc-415b-b97e-018b5d6d265b)
 ![Add Job](https://github.com/user-attachments/assets/908886fb-d6dd-4236-b667-4d898f0c0d93)
+![All applications](https://github.com/user-attachments/assets/4793b01f-1cdc-415b-b97e-018b5d6d265b)
 
 
 
